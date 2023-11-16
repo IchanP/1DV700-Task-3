@@ -3,9 +3,13 @@ package Model;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
+import java.io.InputStreamReader;
+import java.io.FileInputStream;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
 
 public class FileManager {
 
@@ -24,8 +28,8 @@ public class FileManager {
 
   public void ReadFileContents() throws FileNotFoundException, IOException {
     StringBuilder contentBuilder = new StringBuilder();
-    // Attempt to read from the buffer
-    try (BufferedReader br = new BufferedReader(new FileReader(this.file))) {
+    try (BufferedReader br = new BufferedReader(
+        new InputStreamReader(new FileInputStream(this.file), StandardCharsets.UTF_8))) {
       String currentLine;
       while ((currentLine = br.readLine()) != null) {
         contentBuilder.append(currentLine).append("\n");
@@ -35,7 +39,8 @@ public class FileManager {
   }
 
   public void WriteFileContents(String content) throws IOException {
-    try (FileWriter writer = new FileWriter(this.file)) {
+    try (BufferedWriter writer = new BufferedWriter(
+        new OutputStreamWriter(new FileOutputStream(this.file), StandardCharsets.UTF_8))) {
       writer.write(content);
     }
     this.contents = content;
