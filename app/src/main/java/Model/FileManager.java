@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.FileWriter;
 
 public class FileManager {
 
@@ -12,7 +13,7 @@ public class FileManager {
   private String contents;
   private File file;
 
-  public String extractFileContents(String filePath) throws FileNotFoundException, IOException {
+  public String ExtractFileContents(String filePath) throws FileNotFoundException, IOException {
     this.filePath = filePath;
     this.file = new File(this.filePath);
     this.CheckFileExists(file);
@@ -30,6 +31,13 @@ public class FileManager {
       }
     }
     this.contents = contentBuilder.toString();
+  }
+
+  public void WriteFileContents(String content) throws IOException {
+    try (FileWriter writer = new FileWriter(this.file)) {
+      writer.write(content);
+    }
+    this.contents = content;
   }
 
   private void CheckFileExists(File file) {

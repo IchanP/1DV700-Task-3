@@ -21,13 +21,12 @@ public class CryptoController {
   private String GetFileContents() {
     String filePath = this.v.AskForFilePath();
     String contents = this.ExtractFileContent(filePath);
-    System.out.println(contents);
     return filePath;
   }
 
   private String ExtractFileContent(String filePath) {
     try {
-      return fm.extractFileContents(filePath);
+      return fm.ExtractFileContents(filePath);
     } catch (IllegalArgumentException | IOException e) {
       System.out.println(e.getMessage());
       return this.GetFileContents();
