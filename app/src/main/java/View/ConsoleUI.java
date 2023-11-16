@@ -46,10 +46,10 @@ public class ConsoleUI implements UI {
   }
 
   public int AskForSubKey() {
-    System.out.println("Please enter the key you want to use, within 8 bits (0-255):");
+    System.out.println("Please enter the key you want to use, any number between: (0-127):");
     int key = scanner.nextInt();
     if (key > 255 || key < 0) {
-      throw new IllegalArgumentException("Key must be within 8 bits (0-255).");
+      throw new IllegalArgumentException("Key must be within: (0-127).");
     }
     return key;
   }
