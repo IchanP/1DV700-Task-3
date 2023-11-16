@@ -76,10 +76,11 @@ public class CryptoController {
     int key = this.GetSubKey();
     SubstitutionEncryption se = new SubstitutionEncryption();
     if (method == DecryptEncrypt.ENCRYPT) {
-      String encryptedMessage = se.Encrypt(key, contents);
-      this.WriteToFile(encryptedMessage);
+      String substitutionCipherText = se.Encrypt(key, contents);
+      this.WriteToFile(substitutionCipherText);
     } else {
-      // TODO decrypt substitution
+      String substitutionPlainText = se.Decrypt(key, contents);
+      this.WriteToFile(substitutionPlainText);
     }
   }
 
