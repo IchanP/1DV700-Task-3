@@ -24,6 +24,7 @@ public class FileManager {
 
   public void ReadFileContents() throws FileNotFoundException, IOException {
     StringBuilder contentBuilder = new StringBuilder();
+    // Attempt to read from the buffer
     try (BufferedReader br = new BufferedReader(new FileReader(this.file))) {
       String currentLine;
       while ((currentLine = br.readLine()) != null) {

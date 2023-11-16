@@ -1,12 +1,22 @@
 package View;
 
 public interface UI {
-  
+  enum EncryptionMethod {
+    SUBSTITUTION, TRANSPOSITION
+  }
+  enum DecryptEncrypt {
+    DECRYPT, ENCRYPT
+  }
+
   public void Welcome();
 
   public String AskForFilePath();
 
-  public String AskForEncryptionMethod();
+  public EncryptionMethod AskForEncryptionMethod();
 
-  public int AskForKey();
+  public DecryptEncrypt AskForDecryptEncrypt();
+
+  public int AskForSubKey();
+
+  public String AskForTransKey();
 }
