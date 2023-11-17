@@ -6,9 +6,8 @@ public class TranspositionEncryption {
 
   public String Encrypt(String plainText, int key) {
 
-    StringBuilder filteredText = this.FilterText(plainText);
-    String cleanText = PadTextWithSpaces(filteredText.toString(), key);
-    StringBuilder encrypted = this.EncryptText(cleanText, key);
+    String paddedText = PadTextWithSpaces(plainText, key);
+    StringBuilder encrypted = this.EncryptText(paddedText, key);
     return encrypted.toString();
   }
 
@@ -39,16 +38,6 @@ public class TranspositionEncryption {
       textLength = cleanText.length();
     }
     return cleanText;
-  }
-
-  private StringBuilder FilterText(String unFilteredText) {
-    StringBuilder filteredText = new StringBuilder();
-    for (char c : unFilteredText.toCharArray()) {
-      if (!printable.IsNonPrintable(c)) {
-        filteredText.append(c);
-      }
-    }
-    return filteredText;
   }
 
   // Method to decrypt the text encrypted using columnar transposition
