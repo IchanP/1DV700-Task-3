@@ -25,43 +25,48 @@ public class SubstitutionEncryption {
 
 
   private char EncryptChar(int key, char c, int position) {
-    if (this.IsNonPrintable(c)) {
+    if (this.IsNonPrintable(c)) { // Skip non-printable and extended ASCII characters
       return c;
     }
-    int shift = position % 2 == 0 ? key : -key; // Alternate shift direction
-    // if position is even it will shift it forward. If odd it will shift backwards.
-    int firstShift = c + shift;
-
+    int shift = position % 2 == 0 ? key : -key;
+    int shiftedValue = c + shift;
     // Adjust for wrapping within printable range
-    int lastShift = this.ShiftValueWithinRange(firstShift);
-
-    return (char) lastShift;
+    int shiftedValueWithinRange = this.ShiftValueWithinRange(shiftedValue);
+    return (char) shiftedValueWithinRange;
   }
 
   private char DecryptChar(int key, char c, int position) {
-    if (this.IsNonPrintable(c)) {
+    if (this.IsNonPrintable(c)) { // Skip non-printable and extended ASCII characters
       return c;
     }
-    int shift = position % 2 == 0 ? -key : key; // Alternate shift direction
-    // does the reverse of the encryption. if it's even it will shift it backwards, if odd it will
-    // shift it forward.
-    int firstShift = c + shift;
-    int lastShift = this.ShiftValueWithinRange(firstShift);
-    return (char) lastShift;
+    int shift = position % 2 == 0 ? -key : key;
+    int shiftedValue = c + shift;
+    // Adjust for wrapping within printable range
+    int shiftedValueWithinRange = this.ShiftValueWithinRange(shiftedValue);
+    return (char) shiftedValueWithinRange;
   }
 
   private int ShiftValueWithinRange(int valueToShift) {
     int shiftedValue = valueToShift;
-    if (valueToShift > 126) {
-      shiftedValue = 32 + (valueToShift - 127); // Shifts the value down below the upper limit of
-                                                // the printable range. Possible values are 33-126.
-                                                // For example if the value is 127, it will shift
-                                                // it back down 33.
-    } else if (valueToShift < 32) {
-      shiftedValue = 127 - (32 - valueToShift); // Shifts the value up above the lower limit of the
-                                                // printable range. Possible values are 95-126.
-                                                // For example if the value is 31, it will shift
-                                                // it up to 126.
+    
+    int rangeStart = 32;
+    int rangeEnd = 126;
+
+    int range = 126 - 32 + 1; // Count of printable characters.
+    // Shifts the value down below the upper
+    // limit of
+    // the printable range. Possible values are 33-126.
+    // For example if the value is 127, it will shift
+    // it back down 32.
+    if (valueToShift > rangeEnd) {
+      shiftedValue = rangeStart + (valueToShift - rangeEnd - 1) % range;
+    } else if (valueToShift < rangeStart) {
+      // Shifts the value up above the lower limit
+      // of the
+      // printable range. Possible values are 95-126.
+      // For example if the value is 31, it will shift
+      // it up to 126.
+      shiftedValue = rangeEnd - (rangeStart - valueToShift - 1) % range;
     }
     return shiftedValue;
   }
