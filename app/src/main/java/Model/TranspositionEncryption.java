@@ -2,53 +2,58 @@ package Model;
 
 public class TranspositionEncryption {
 
+  PrintableUtil printable = new PrintableUtil();
 
-
-  // Function to encrypt the text
-  public String Encrypt(String text, int key) {
+  // Method to encrypt using a simple columnar transposition
+  public String Encrypt(String text, int columnWidth) {
+    StringBuilder filteredText = new StringBuilder();
     StringBuilder encrypted = new StringBuilder();
-    int len = text.length();
 
-    // Create columns
-    for (int i = 0; i < key; i++) {
-      int index = i;
-      while (index < len) {
-        encrypted.append(text.charAt(index));
-        index += key;
+    // Filter out non-printable characters
+    for (char c : text.toCharArray()) {
+      if (!printable.IsNonPrintable(c)) {
+        filteredText.append(c);
+      }
+    }
+
+    String cleanText = filteredText.toString();
+    int textLength = cleanText.length();
+
+    // Pad the text with spaces if it's not a multiple of the column width
+    int paddingLength = columnWidth - (textLength % columnWidth);
+    if (paddingLength != columnWidth) {
+      for (int i = 0; i < paddingLength; i++) {
+        cleanText += " ";
+      }
+      textLength = cleanText.length();
+    }
+
+    // Read the characters column-wise
+    for (int i = 0; i < columnWidth; i++) {
+      for (int j = i; j < textLength; j += columnWidth) {
+        encrypted.append(cleanText.charAt(j));
       }
     }
 
     return encrypted.toString();
   }
 
-  public String Decrypt(String encryptedText, int key) {
-    int len = encryptedText.length();
+  // Method to decrypt the text encrypted using columnar transposition
+  public static String Decrypt(String text, int columnWidth) {
+    StringBuilder decrypted = new StringBuilder();
+    int numRows = text.length() / columnWidth;
 
-    // Calculate the number of full rows and the number of characters in the last row
-    int fullRows = len / key;
-    int extraChars = len % key;
-
-    // Create an array to store the decrypted characters
-    char[] decrypted = new char[len];
-
-    // Initialize variables to track the current position in the encrypted text
-    int encryptedIndex = 0;
-
-    // Iterate over each column in the grid
-    for (int col = 0; col < key; col++) {
-      int index = col;
-      int numberOfRows = col < extraChars ? fullRows + 1 : fullRows;
-
-      // Iterate over each row for this column
-      for (int row = 0; row < numberOfRows; row++) {
-        decrypted[index] = encryptedText.charAt(encryptedIndex++);
-        index += key;
+    // Reconstruct the grid used for the encryption and read row-wise
+    for (int i = 0; i < numRows; i++) {
+      for (int j = 0; j < columnWidth; j++) {
+        int charPosition = j * numRows + i;
+        if (charPosition < text.length()) {
+          decrypted.append(text.charAt(charPosition));
+        }
       }
     }
 
-    // Convert the character array to a string
-    return new String(decrypted);
+    return decrypted.toString().trim(); // trim to remove any padding
   }
-
 
 }

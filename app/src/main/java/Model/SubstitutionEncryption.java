@@ -2,6 +2,8 @@ package Model;
 
 public class SubstitutionEncryption {
 
+  PrintableUtil printable = new PrintableUtil();
+
   public String Encrypt(int key, String content) {
     StringBuilder cipherText = new StringBuilder(); // Use stringbuilder to ensure that
                                                     // linebreaks remain consistent.
@@ -25,7 +27,7 @@ public class SubstitutionEncryption {
 
 
   private char EncryptChar(int key, char c, int position) {
-    if (this.IsNonPrintable(c)) { // Skip non-printable and extended ASCII characters
+    if (printable.IsNonPrintable(c)) { // Skip non-printable and extended ASCII characters
       return c;
     }
     int shift = position % 2 == 0 ? key : -key;
@@ -38,7 +40,7 @@ public class SubstitutionEncryption {
   }
 
   private char DecryptChar(int key, char c, int position) {
-    if (this.IsNonPrintable(c)) { // Skip non-printable and extended ASCII characters
+    if (printable.IsNonPrintable(c)) { // Skip non-printable and extended ASCII characters
       return c;
     }
     int shift = position % 2 == 0 ? -key : key;
