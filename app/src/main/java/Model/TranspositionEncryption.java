@@ -4,56 +4,71 @@ public class TranspositionEncryption {
 
   PrintableUtil printable = new PrintableUtil();
 
-  // Method to encrypt using a simple columnar transposition
-  public String Encrypt(String text, int columnWidth) {
-    StringBuilder filteredText = new StringBuilder();
-    StringBuilder encrypted = new StringBuilder();
+  public String Encrypt(String plainText, int key) {
 
-    // Filter out non-printable characters
-    for (char c : text.toCharArray()) {
+    StringBuilder filteredText = this.FilterText(plainText);
+    String cleanText = PadTextWithSpaces(filteredText.toString(), key);
+    StringBuilder encrypted = this.EncryptText(cleanText, key);
+    return encrypted.toString();
+  }
+
+  private StringBuilder EncryptText(String unEncryptedText, int key) {
+    StringBuilder encrypted = new StringBuilder();
+    int textLength = unEncryptedText.length();
+    // Outer loop dictates which column is being worked on.
+    for (int i = 0; i < key; i++) {
+      // Inner loop dictates which position in the column is being worked on.
+      for (int j = i; j < textLength; j += key) {
+        encrypted.append(unEncryptedText.charAt(j));
+      }
+    }
+    return encrypted;
+  }
+
+  private String PadTextWithSpaces(String text, int key) {
+    String cleanText = text.toString();
+    int textLength = cleanText.length();
+    // The text is passed with spaces so that the text can be neatly divided into columns
+    // paddingLength is essentially the number of spaces required to fill out the last column of the
+    // grid with characters.
+    int paddingLength = key - (textLength % key);
+    if (paddingLength != key) {
+      for (int i = 0; i < paddingLength; i++) {
+        cleanText += " "; // Padding with spaces
+      }
+      textLength = cleanText.length();
+    }
+    return cleanText;
+  }
+
+  private StringBuilder FilterText(String unFilteredText) {
+    StringBuilder filteredText = new StringBuilder();
+    for (char c : unFilteredText.toCharArray()) {
       if (!printable.IsNonPrintable(c)) {
         filteredText.append(c);
       }
     }
-
-    String cleanText = filteredText.toString();
-    int textLength = cleanText.length();
-
-    // Pad the text with spaces if it's not a multiple of the column width
-    int paddingLength = columnWidth - (textLength % columnWidth);
-    if (paddingLength != columnWidth) {
-      for (int i = 0; i < paddingLength; i++) {
-        cleanText += " ";
-      }
-      textLength = cleanText.length();
-    }
-
-    // Read the characters column-wise
-    for (int i = 0; i < columnWidth; i++) {
-      for (int j = i; j < textLength; j += columnWidth) {
-        encrypted.append(cleanText.charAt(j));
-      }
-    }
-
-    return encrypted.toString();
+    return filteredText;
   }
 
   // Method to decrypt the text encrypted using columnar transposition
-  public static String Decrypt(String text, int columnWidth) {
+  public static String Decrypt(String text, int key) {
     StringBuilder decrypted = new StringBuilder();
-    int numRows = text.length() / columnWidth;
+    int numRows = text.length() / key;
 
-    // Reconstruct the grid used for the encryption and read row-wise
+    // Outer loop works on the rows.
     for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < columnWidth; j++) {
+      // Inner loop works on the columns
+      for (int j = 0; j < key; j++) {
+        // The charposition is calculated based on the row and column positions.
+        // Where the column number is multiplied by the number of rows and the row number is added.
         int charPosition = j * numRows + i;
         if (charPosition < text.length()) {
           decrypted.append(text.charAt(charPosition));
         }
       }
     }
-
-    return decrypted.toString().trim(); // trim to remove any padding
+    // Return the decrypted string, trimmed to remove any padding spaces
+    return decrypted.toString().trim();
   }
-
 }
