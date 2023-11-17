@@ -46,10 +46,10 @@ public class ConsoleUI implements UI {
   }
 
   public int AskForSubKey() {
-    System.out.println("Please enter the key you want to use, any number between: (0-127):");
+    System.out.println("Please enter the key you want to use, any number between: (1-126):");
     int key = scanner.nextInt();
-    if (key > 255 || key < 0) {
-      throw new IllegalArgumentException("Key must be within: (0-127).");
+    if (key > 126 || key < 1) {
+      throw new IllegalArgumentException("Key must be within: (1-126).");
     }
     return key;
   }

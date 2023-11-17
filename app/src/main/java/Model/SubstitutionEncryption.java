@@ -25,55 +25,51 @@ public class SubstitutionEncryption {
 
 
   private char EncryptChar(int key, char c, int position) {
-    if (c < 32 || c > 126) { // Skip non-printable and extended ASCII characters
+    if (this.IsNonPrintable(c)) {
       return c;
     }
-    int shift = position % 2 == 0 ? key : -key;
-    int shiftedValue = c + shift;
-    int range = 126 - 32 + 1; // Range of printable ASCII characters
+    int shift = position % 2 == 0 ? key : -key; // Alternate shift direction
+    // if position is even it will shift it forward. If odd it will shift backwards.
+    int firstShift = c + shift;
 
     // Adjust for wrapping within printable range
-    if (shiftedValue > 126) {
-      shiftedValue = 32 + (shiftedValue - 127);
-    } else if (shiftedValue < 32) {
-      shiftedValue = 127 - (32 - shiftedValue);
-    }
+    int lastShift = this.ShiftValueWithinRange(firstShift);
 
-    return (char) shiftedValue;
+    return (char) lastShift;
   }
 
   private char DecryptChar(int key, char c, int position) {
-    if (c < 32 || c > 126) { // Skip non-printable and extended ASCII characters
+    if (this.IsNonPrintable(c)) {
       return c;
     }
-    int shift = position % 2 == 0 ? -key : key;
-    int shiftedValue = c + shift;
-    int range = 126 - 32 + 1; // Range of printable ASCII characters
-
-    // Adjust for wrapping within printable range
-    if (shiftedValue > 126) {
-      shiftedValue = 32 + (shiftedValue - 127);
-    } else if (shiftedValue < 32) {
-      shiftedValue = 127 - (32 - shiftedValue);
-    }
-
-    return (char) shiftedValue;
+    int shift = position % 2 == 0 ? -key : key; // Alternate shift direction
+    // does the reverse of the encryption. if it's even it will shift it backwards, if odd it will
+    // shift it forward.
+    int firstShift = c + shift;
+    int lastShift = this.ShiftValueWithinRange(firstShift);
+    return (char) lastShift;
   }
 
+  private int ShiftValueWithinRange(int valueToShift) {
+    int shiftedValue = valueToShift;
+    if (valueToShift > 126) {
+      shiftedValue = 32 + (valueToShift - 127); // Shifts the value down below the upper limit of
+                                                // the printable range. Possible values are 33-126.
+                                                // For example if the value is 127, it will shift
+                                                // it back down 33.
+    } else if (valueToShift < 32) {
+      shiftedValue = 127 - (32 - valueToShift); // Shifts the value up above the lower limit of the
+                                                // printable range. Possible values are 95-126.
+                                                // For example if the value is 31, it will shift
+                                                // it up to 126.
+    }
+    return shiftedValue;
+  }
 
-  /*
-   * private char EncryptChar(int key, char c, int position) { int shift = position % 2 == 0 ? key :
-   * -key; // Alternate shift direction // if position is even it will shift it forward. If odd it
-   * will shift backwards. int encryptExtendedASCII = ((int) c + shift + 127) % 127; // Applies the
-   * shift. // The % 256 modolo ensures that the number is always between 0 and 255. // the shift
-   * determines whether it will be shifted forward or backwards. // the 256 is added to ensure that
-   * the number is positive, as it could be negative because the // shift may be negative. return
-   * (char) encryptExtendedASCII; }
-   * 
-   * private char DecryptChar(int key, char c, int position) { int shift = position % 2 == 0 ? -key
-   * : key; // Alternate shift direction // does the reverse of the above. if it's even it will
-   * shift it backwards, if odd it will shift // it forward int plaintextExtendedASCII = ((int) c +
-   * shift + 127) % 127; // This is the same as above, but the shift is reversed from the encryption
-   * due to the line before. return (char) plaintextExtendedASCII; }
-   */
+  private boolean IsNonPrintable(char c) {
+    return c < 32 || c > 126; // These correspond to the non-printable ASCII characters, which if
+                              // encrypted and encoded as UTF_8 will not be observable.
+                              // They can still be encrypted and decrypted.
+                              // However for the sake of the assignment I have chosen to skip them.
+  }
 }
