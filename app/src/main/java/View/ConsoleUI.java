@@ -54,9 +54,10 @@ public class ConsoleUI implements UI {
     return key;
   }
 
-  public String AskForTransKey() {
-    System.out.println("Please enter the key you want to use, TODO"); // TODO
-    return "lol";
+  public int AskForTransKey() {
+    System.out.println("Please enter the key you want to use (a number greater than 1) : ");
+    int key = scanner.nextInt();
+    return key;
   }
 
   public void PrintError(String message) {

@@ -18,5 +18,5 @@ public interface UI {
 
   public int AskForSubKey();
 
-  public String AskForTransKey();
+  public int AskForTransKey();
 }

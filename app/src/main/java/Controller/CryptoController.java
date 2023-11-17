@@ -3,6 +3,7 @@ package Controller;
 import java.io.IOException;
 import Model.FileManager;
 import Model.SubstitutionEncryption;
+import Model.TranspositionEncryption;
 import View.UI;
 import View.UI.EncryptionMethod;
 import View.UI.DecryptEncrypt;
@@ -87,11 +88,14 @@ public class CryptoController {
   // TODO add transposition key getter here
 
   private void DoTransposition(DecryptEncrypt method, String contents) {
-    String key = this.v.AskForTransKey();
+    int key = this.v.AskForTransKey();
+    TranspositionEncryption te = new TranspositionEncryption();
     if (method == DecryptEncrypt.ENCRYPT) {
-      // TODO encrypt transposition
+      String transpositionCipherText = te.Encrypt(contents, key);
+      this.WriteToFile(transpositionCipherText);
     } else {
-      // TODO decrypt transposition
+      String transpositionPlainText = te.Decrypt(contents, key);
+      this.WriteToFile(transpositionPlainText);
     }
   }
 

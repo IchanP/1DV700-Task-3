@@ -29,6 +29,8 @@ public class SubstitutionEncryption {
       return c;
     }
     int shift = position % 2 == 0 ? key : -key;
+    // If the character is on an even position shift forward
+    // Otherwise shift back
     int shiftedValue = c + shift;
     // Adjust for wrapping within printable range
     int shiftedValueWithinRange = this.ShiftValueWithinRange(shiftedValue);
@@ -40,6 +42,8 @@ public class SubstitutionEncryption {
       return c;
     }
     int shift = position % 2 == 0 ? -key : key;
+    // If the character is on an odd position shift backwards
+    // Otherwise shift forward
     int shiftedValue = c + shift;
     // Adjust for wrapping within printable range
     int shiftedValueWithinRange = this.ShiftValueWithinRange(shiftedValue);
@@ -48,7 +52,7 @@ public class SubstitutionEncryption {
 
   private int ShiftValueWithinRange(int valueToShift) {
     int shiftedValue = valueToShift;
-    
+
     int rangeStart = 32;
     int rangeEnd = 126;
 
